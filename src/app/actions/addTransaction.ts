@@ -4,8 +4,10 @@ import { db } from "../../../lib/db";
 import { revalidatePath } from "next/cache";
 
 interface TransactionData {
+    id: string,
     text: string,
     amount: number,
+    createdat: Date,
     userid: string,
 }
 
@@ -41,9 +43,13 @@ async function addTransaction(formData: FormData): Promise<TransactionResult>{
     const { userId } = auth()
     console.log('user id ', userId)
 
+    if (!userId) {
+        return { error: 'User not authenticated.' };
+    }
+
     try {
 
-        const transactionData: TransactionData = db.transaction.create({
+        const transactionData: TransactionData = await db.transaction.create({
             data: {
                 text,
                 amount,
@@ -56,10 +62,8 @@ async function addTransaction(formData: FormData): Promise<TransactionResult>{
         
     } catch (error) {
         console.error(error)
+        return { error: 'Failed to add transaction.' };
     }
-
-    
-
 }
 
 export default addTransaction;
