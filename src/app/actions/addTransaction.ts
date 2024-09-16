@@ -64,6 +64,9 @@ async function addTransaction(formData: FormData): Promise<TransactionResult>{
         console.error(error)
         return { error: 'Failed to add transaction.' };
     }
+
+    // Add a default return statement for the case when no error occurs and the data property is not set
+    return { data: undefined };
 }
 
 export default addTransaction;
